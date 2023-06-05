@@ -1,6 +1,8 @@
 from typing import List
 from fastapi import FastAPI, UploadFile, File
-from predict import get_prediction
+
+# Import functions
+from image.classify import get_prediction
 
 app = FastAPI()
 
@@ -10,7 +12,7 @@ async def read_root():
     return {"Status": "normal"}
 
 
-@app.post("/predict")
+@app.post("/predict/image/class")
 async def predict(files: List[UploadFile] = File(...)):
     file = files[0]
     img_bytes = await file.read()
