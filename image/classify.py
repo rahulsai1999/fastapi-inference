@@ -1,11 +1,14 @@
 import io
 import json
+import pathlib
 
 from PIL import Image
 from torchvision import models
 import torchvision.transforms as transforms
 
-imagenet_class_index = json.load(open("imagenet_class_index.json"))
+# file path to imagenet_class_index.json
+file_path = "imagenet_class_index.json"
+imagenet_class_index = json.load(open(pathlib.Path(__file__).parent / file_path))
 
 model = models.densenet121(weights="IMAGENET1K_V1")
 model.eval()
