@@ -1,9 +1,10 @@
-import os
+from PIL import Image
 from typing import List
 from fastapi import FastAPI, UploadFile, File
 
 # Import functions
 from image.classify import get_prediction
+from image.caption import generate_captions
 from audio.transcribe import transcribe
 
 app = FastAPI()
@@ -20,6 +21,14 @@ async def predict(files: List[UploadFile] = File(...)):
     img_bytes = await file.read()
     class_id, class_name = get_prediction(image_bytes=img_bytes)
     return {"class_id": class_id, "class_name": class_name}
+
+
+@app.post("/predict/image/caption")
+async def predict(files: List[UploadFile] = File(...)):
+    file = files[0]
+    img = Image.open(file.file)
+    caption = generate_captions(image=img)
+    return {"caption": caption}
 
 
 @app.post("/predict/audio/transcribe")
