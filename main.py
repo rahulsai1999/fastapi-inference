@@ -1,10 +1,12 @@
 from PIL import Image
 from typing import List
 from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import FileResponse
 
 # Import functions
 from image.classify import get_prediction
 from image.caption import generate_captions
+from image.segment import segment_image
 from audio.transcribe import transcribe
 
 app = FastAPI()
@@ -29,6 +31,14 @@ async def predict(files: List[UploadFile] = File(...)):
     img = Image.open(file.file)
     caption = generate_captions(image=img)
     return {"caption": caption}
+
+
+@app.post("/predict/image/segment")
+async def predict(files: List[UploadFile] = File(...)):
+    file = files[0]
+    img = Image.open(file.file)
+    segment_image(image=img)
+    return FileResponse("overlaid_image.png")
 
 
 @app.post("/predict/audio/transcribe")
